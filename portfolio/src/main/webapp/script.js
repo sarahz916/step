@@ -28,10 +28,21 @@ function addRandomGreeting() {
 }
 
 /**
- * fetchs /data information async
+ * fetchs /data information async aka Comments
  */
-async function getData() {
+async function getComments() {
   const response = await fetch('/data');
-  const data = await response.text();
-  document.getElementById('data-container').innerText = data;
+  const data = await response.json();
+  const commentEl = document.getElementById('Comments');
+  data.forEach((line)=> {
+      commentEl.appendChild(createListElement(line));
+      });
+
 }
+
+/** Creates an <li> element containing text. */
+function createListElement(text) {
+  const liElement = document.createElement('li');
+  liElement.innerText = text;
+  return liElement
+  }
