@@ -63,13 +63,29 @@
     <form action="/data" method="POST">
 
       <p>Enter a comment:</p>
-      <textarea name="text-input">Comment</textarea>
+      <textarea name="text-input"></textarea>
       <br/>
       <input type="submit" />
+
+      
+    </form>
+
+    <form id = "maxcom">
+      <p>Enter number of comments you wish to view:</p>
+      <input type="number" name="max-comments" defaultValue = "3">
+      <br/>
+      <input type = "button" onclick = "getComments()" value = "Submit"/>
+      <br/>
     </form>
     
-    <h2> Comments </h2>
-     <ul id="Comments"></ul> <!-- TODO: make div and then make seperate boxes of p to look more like comments see BS documentation-->
+    <h2> Submitted Comments </h2>
+     <ul id="Comments"></ul> 
+     <!-- TODO: make div and then make seperate boxes of p
+      to look more like comments -->
+      
+    <form >
+    <button onclick="deleteComments()"> Delete </button>
+    </form>
   </div>
   </body>
 </html>

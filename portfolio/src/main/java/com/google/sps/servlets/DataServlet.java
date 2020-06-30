@@ -34,19 +34,28 @@ public class DataServlet extends HttpServlet {
     
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-     //retrieves comment data from datastore
+     // Get the user input on how many comments to display
+     
+    Integer maxComments = getMaxComments(request);
+     //retrieves comment data from datastore 
+     //displays most recent comments first
     Query query = new Query("Comment").addSort("timestamp", SortDirection.DESCENDING);
 
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     PreparedQuery results = datastore.prepare(query);
 
+    //create arraylist of string to store comments
     ArrayList<String> comments = new ArrayList<String>();
-    for (Entity entity : results.asIterable()) {
-      long id = entity.getKey().getId();
-      String text = (String) entity.getProperty("text");
-      long timestamp = (long) entity.getProperty("timestamp");
 
+    for (Entity entity : results.asIterable()) {
+      //break when max comments are reached
+      if (comments.size() == maxComments){
+          break;
+      }
+      String text = (String) entity.getProperty("text");
       comments.add(text);
+      
+      
     }
 
     Gson gson = new Gson();
@@ -81,5 +90,22 @@ public class DataServlet extends HttpServlet {
       return defaultValue;
     }
     return value;
+  }
+
+  /** Returns the integer entered by user on how many comments  */
+  private int getMaxComments(HttpServletRequest request) {
+    // Get the input from the form on MaxComments and convert to integer to the
+    // toGet function
+    String CommentNumString = request.getParameter("max-comments");
+    // Convert the input to an int.
+    int CommentNum;
+    try {
+      CommentNum = Integer.parseInt(CommentNumString);
+    } catch (NumberFormatException e) {
+      System.err.println("Could not convert to int: " + CommentNumString);
+      return -1;
+    }
+
+    return CommentNum;
   }
 }
