@@ -3,8 +3,9 @@
   <head>
     <meta charset="UTF-8">
     <title>Sarah Zou's STEP Portfolio</title>
+    <link rel="stylesheet" href="style.css" type= 'text/css'>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
-    <!--<link rel="stylesheet" href="style.css">-->
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAiGKGFCuFdb_ZrrTy_GHhFSepBuApS6qE"></script>
     <script src="script.js"></script>
   </head>
   <nav class="navbar navbar-expand-lg navbar-light bg-light">
@@ -38,13 +39,14 @@
       </ul>
   </div>
   </nav>
-  <body>
+  <body onload="createMap();">
     <div id="content">
       
       <h2> Travel </h2>
-      </a>
-      <p> Empty for now</p>
+      <p>This page shows a Google Map!</p> 
+      <div id="map"></div>
       <p> <a href="index.html">Back to home page </a></p>
     </div>
+   
   </body>
 </html>
