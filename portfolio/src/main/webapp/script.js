@@ -59,7 +59,7 @@ function createListElement(text) {
   return liElement
   }
 
-/** Calls delete-data servlet to delete commens and then fetches /data */
+/** Calls delete-data servlet to delete commens and then fetches now empty comments from /data */
 async function deleteComments(){
   fetch('/delete-data', {method: 'POST'});
   const response = await fetch("/data");
