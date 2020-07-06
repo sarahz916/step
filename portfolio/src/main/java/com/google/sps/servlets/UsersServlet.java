@@ -34,8 +34,7 @@ public class UsersServlet extends HttpServlet {
                   + "\">sign out</a>.</p>"
                   + "</br>"
                   +"<p> <a href=\"index.html\">Back to home page </a></p>");
-                  //TODO: add in link to go back to homepage 
-                  // add in nickname field
+                  // TODO (@zous): add in nickname field.
                   
     } else {
       resp.getWriter()
