@@ -38,7 +38,7 @@ public class DataServlet extends HttpServlet {
      // If user input for max comments is greater than all comments, all comments will display.
      // If comments are empty, no comments will be displayed.
      
-    Integer maxComments = getMaxComments(request);
+    Integer maxComments = getNumDisplayComments(request);
      // Retrieves comment data from datastore. 
      // Displays most recent comments first.
     Query query = new Query("Comment").addSort("timestamp", SortDirection.DESCENDING);
@@ -95,7 +95,7 @@ public class DataServlet extends HttpServlet {
   }
 
   /** Returns the integer entered by user on how many comments  */
-  private int getMaxComments(HttpServletRequest request) {
+  private int getNumDisplayComments(HttpServletRequest request) {
     // Get the input from the form on MaxComments and convert to integer to the
     // toGet function.
     String CommentNumString = request.getParameter("max-comments");
