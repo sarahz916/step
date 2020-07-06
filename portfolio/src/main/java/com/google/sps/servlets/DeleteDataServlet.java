@@ -31,7 +31,7 @@ import java.util.ArrayList;
 import com.google.gson.Gson;
 
 
-/** Servlet that delete comments data */
+/** Servlet that delete comments data from datastore.*/
 @WebServlet("/delete-data")
 public class DeleteDataServlet extends HttpServlet {
 
