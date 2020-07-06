@@ -46,7 +46,7 @@ public class DataServlet extends HttpServlet {
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     PreparedQuery results = datastore.prepare(query);
 
-    // Create arraylist of string to store commentss
+    // Create arraylist of string to store comments.
     ArrayList<String> comments = new ArrayList<String>();
 
     for (Entity entity : results.asIterable()) {
@@ -74,7 +74,7 @@ public class DataServlet extends HttpServlet {
     Entity CommentEntity = new Entity("Comment");
     CommentEntity.setProperty("text", text);
     CommentEntity.setProperty("timestamp", timestamp);
-    // Store Comment
+    // Store Comment.
     
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     datastore.put(CommentEntity);
