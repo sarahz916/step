@@ -34,23 +34,23 @@ public class DataServlet extends HttpServlet {
     
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-     // Get the user input on how many comments to display
-     // If user input for max comments is greater than all comments, all comments will display
-     // If comments are empty, no comments will be displayed
+     // Get the user input on how many comments to display.
+     // If user input for max comments is greater than all comments, all comments will display.
+     // If comments are empty, no comments will be displayed.
      
     Integer maxComments = getMaxComments(request);
-     //retrieves comment data from datastore 
-     //displays most recent comments first
+     // Retrieves comment data from datastore. 
+     // Displays most recent comments first.
     Query query = new Query("Comment").addSort("timestamp", SortDirection.DESCENDING);
 
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     PreparedQuery results = datastore.prepare(query);
 
-    //create arraylist of string to store comments
+    // Create arraylist of string to store commentss
     ArrayList<String> comments = new ArrayList<String>();
 
     for (Entity entity : results.asIterable()) {
-      //break when max comments are reached
+     
       if (comments.size() == maxComments){
           break;
       }
@@ -97,7 +97,7 @@ public class DataServlet extends HttpServlet {
   /** Returns the integer entered by user on how many comments  */
   private int getMaxComments(HttpServletRequest request) {
     // Get the input from the form on MaxComments and convert to integer to the
-    // toGet function
+    // toGet function.
     String CommentNumString = request.getParameter("max-comments");
     // Convert the input to an int.
     int CommentNum;
