@@ -31,19 +31,20 @@ function addRandomGreeting() {
  * fetchs /data information async aka Comments
  */
 async function getComments() {
-  //passes in user input on number of comments to display
-  var x = document.getElementById("maxcom");
+  // Passes in user input on number of comments to display.
+  var maxcom = document.getElementById("maxcom");
   var text = "/data?max-comments=";
-  if (x.elements[0].value == ''){
+  // If there is no response, default display is 3 comments.
+  if (maxcom.elements[0].value == ''){
       text += "3"
   }
   else{
-      text += x.elements[0].value;
+      text += maxcom.elements[0].value;
   }
   const response = await fetch(text);
   const data = await response.json();
   const commentEl = document.getElementById('Comments');
-  //clear current comment section
+  // Clear current comment section.
   commentEl.innerText = "";
   data.forEach((line)=> {
       commentEl.appendChild(createListElement(line));
