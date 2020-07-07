@@ -37,7 +37,7 @@ public class DataServlet extends HttpServlet {
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
      // Get the user input on how many comments to display.
-     // If user input for max comments is greater than all comments, all comments will display.
+     // If user input for max comments is greater than all comments in the datastore, all comments will display.
      // If comments in the datastore are empty, no comments will be displayed.
      
     int maxComments = getNumDisplayComments(request);
