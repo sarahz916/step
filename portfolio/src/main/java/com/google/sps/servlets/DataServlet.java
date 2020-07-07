@@ -38,7 +38,7 @@ public class DataServlet extends HttpServlet {
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
      // Get the user input on how many comments to display.
      // If user input for max comments is greater than all comments, all comments will display.
-     // If comments are empty, no comments will be displayed.
+     // If comments in the datastore are empty, no comments will be displayed.
      
     int maxComments = getNumDisplayComments(request);
      // Retrieves comment data from datastore. 
@@ -96,7 +96,7 @@ public class DataServlet extends HttpServlet {
     return value;
   }
 
-  /** Returns the integer entered by user on how many comments  */
+  /** Returns the integer entered by user on how many comments they would like to see displayed */
   private int getNumDisplayComments(HttpServletRequest request) {
     // Get the input from the form on MaxComments and convert to integer to the
     // toGet function.
