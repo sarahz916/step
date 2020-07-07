@@ -47,7 +47,7 @@ public class DataServlet extends HttpServlet {
     PreparedQuery results = datastore.prepare(query);
 
     // Create arraylist of string to store comments.
-    ArrayList<String> comments = new ArrayList<String>();
+    ArrayList<String> comments = new ArrayList<>();
 
     for (Entity entity : results.asIterable()) {
      
