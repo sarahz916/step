@@ -14,6 +14,8 @@
 
 package com.google.sps.servlets;
 
+import com.google.appengine.api.users.UserService;
+import com.google.appengine.api.users.UserServiceFactory;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
@@ -31,7 +33,7 @@ import com.google.gson.Gson;
 /** Servlet that returns comment data */
 @WebServlet("/data")
 public class DataServlet extends HttpServlet {
-    
+     
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
      // Get the user input on how many comments to display.
@@ -49,16 +51,13 @@ public class DataServlet extends HttpServlet {
 
     // Create arraylist of string to store comments.
     ArrayList<String> comments = new ArrayList<>();
-
     for (Entity entity : results.asIterable()) {
-     
       if (comments.size() == maxComments){
           break;
       }
+      String email = (String) entity.getProperty("email");
       String text = (String) entity.getProperty("text");
-      comments.add(text);
-      
-      
+      comments.add(email + ": " + text);  
     }
 
     Gson gson = new Gson();
@@ -75,11 +74,13 @@ public class DataServlet extends HttpServlet {
     Entity CommentEntity = new Entity("Comment");
     CommentEntity.setProperty("text", text);
     CommentEntity.setProperty("timestamp", timestamp);
+    // Store logged in email as part of the CommentEntity.
+    String email = getUserEmail();
+    CommentEntity.setProperty("email", email);
+    UserService userService = UserServiceFactory.getUserService();
     // Store Comment.
-    
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     datastore.put(CommentEntity);
-
     response.sendRedirect("/index.html");
   }
 
@@ -109,7 +110,17 @@ public class DataServlet extends HttpServlet {
       throw new IllegalArgumentException(
             "Expected integer number of comments, but got " +
             commentNumString);
-      return -1;
     }
+  }
+
+  /** Returns the email address of the user currently logged in */
+  private String getUserEmail(){
+      UserService userService = UserServiceFactory.getUserService();
+      if (userService.isUserLoggedIn()) {
+        String userEmail = userService.getCurrentUser().getEmail();
+        return userEmail;
+      } else {
+        return "anonymous";
+      }  
   }
 }
