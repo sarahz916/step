@@ -99,7 +99,7 @@ public class DataServlet extends HttpServlet {
   private int getNumDisplayComments(HttpServletRequest request) {
     // Get the input from the form on MaxComments and convert to integer to the
     // toGet function.
-    String CommentNumString = request.getParameter("max-comments");
+    String commentNumString = request.getParameter("max-comments");
     // Convert the input to an int.
     int CommentNum;
     try {
