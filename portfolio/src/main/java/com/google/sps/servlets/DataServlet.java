@@ -29,6 +29,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
+import java.util.List;
 import com.google.gson.Gson;
 
 /** Servlet that returns comment data */
@@ -48,11 +49,11 @@ public class DataServlet extends HttpServlet {
      // TODO (@zous): add option to see oldest/newest comments first.
 
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-    List results = datastoreService.prepare(query).asList(FetchOptions.Builder.withLimit(maxComments));
+    PreparedQuery results = datastore.prepare(query);
 
     // Create arraylist of string to store comments.
     ArrayList<String> comments = new ArrayList<>();
-    for (Entity entity : results) {
+    for (Entity entity : results.asList(FetchOptions.Builder.withLimit(maxComments))) {
       String email = (String) entity.getProperty("email");
       String text = (String) entity.getProperty("text");
       comments.add(email + ": " + text);  
