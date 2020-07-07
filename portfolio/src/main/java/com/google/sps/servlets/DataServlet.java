@@ -104,13 +104,12 @@ public class DataServlet extends HttpServlet {
     int commentNum;
     try {
       commentNum = Integer.parseInt(commentNumString);
+      return commentNum;
     } catch (NumberFormatException e) {
       throw new IllegalArgumentException(
             "Expected integer number of comments, but got " +
             commentNumString);
       return -1;
     }
-
-    return commentNum;
   }
 }
