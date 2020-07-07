@@ -42,6 +42,7 @@ public class DataServlet extends HttpServlet {
      // Retrieves comment data from datastore. 
      // Displays most recent comments first.
     Query query = new Query("Comment").addSort("timestamp", SortDirection.DESCENDING);
+     // TODO (@zous): add option to see oldest/newest comments first.
 
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     PreparedQuery results = datastore.prepare(query);
