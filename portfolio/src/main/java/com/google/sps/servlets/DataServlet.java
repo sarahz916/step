@@ -14,6 +14,7 @@
 
 package com.google.sps.servlets;
 
+import com.google.appengine.api.datastore.FetchOptions;
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
 import com.google.appengine.api.datastore.DatastoreService;
@@ -47,14 +48,11 @@ public class DataServlet extends HttpServlet {
      // TODO (@zous): add option to see oldest/newest comments first.
 
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-    PreparedQuery results = datastore.prepare(query);
+    List results = datastoreService.prepare(query).asList(FetchOptions.Builder.withLimit(maxComments));
 
     // Create arraylist of string to store comments.
     ArrayList<String> comments = new ArrayList<>();
-    for (Entity entity : results.asIterable()) {
-      if (comments.size() == maxComments){
-          break;
-      }
+    for (Entity entity : results) {
       String email = (String) entity.getProperty("email");
       String text = (String) entity.getProperty("text");
       comments.add(email + ": " + text);  
