@@ -49,7 +49,6 @@ async function getComments() {
   data.forEach((line)=> {
       commentEl.appendChild(createListElement(line));
       });
-
 }
 
 /** Creates an <li> element containing text. */

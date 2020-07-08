@@ -14,6 +14,9 @@
 
 package com.google.sps.servlets;
 
+import com.google.cloud.language.v1.Document;
+import com.google.cloud.language.v1.LanguageServiceClient;
+import com.google.cloud.language.v1.Sentiment;
 import com.google.appengine.api.datastore.FetchOptions;
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
@@ -56,7 +59,8 @@ public class DataServlet extends HttpServlet {
     for (Entity entity : results.asList(FetchOptions.Builder.withLimit(maxComments))) {
       String email = (String) entity.getProperty("email");
       String text = (String) entity.getProperty("text");
-      comments.add(email + ": " + text);  
+      //String score = (String) entity.getProperty("score");
+      comments.add(email + ": " + text + "\n" + "Score: null");  
     }
 
     Gson gson = new Gson();
@@ -76,7 +80,16 @@ public class DataServlet extends HttpServlet {
     // Store logged in email as part of the CommentEntity.
     String email = getUserEmail();
     CommentEntity.setProperty("email", email);
-    UserService userService = UserServiceFactory.getUserService();
+    //Get sentiment analysis score. 
+    Document doc =
+        Document.newBuilder().setContent(text).setType(Document.Type.PLAIN_TEXT).build();
+    LanguageServiceClient languageService = LanguageServiceClient.create();
+    Sentiment sentiment = languageService.analyzeSentiment(doc).getDocumentSentiment();
+    float score = sentiment.getScore();
+    System.out.println(score);
+    languageService.close();
+    //float score = getSentimentScore(text);
+    CommentEntity.setProperty("score", score);
     // Store Comment.
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     datastore.put(CommentEntity);
@@ -121,5 +134,17 @@ public class DataServlet extends HttpServlet {
       } else {
         return "anonymous";
       }  
+  }
+
+  /** Returns sentiment ananlysis value of comment a float between -1 and 1 */
+  private float getSentimentScore(String message) throws IOException {
+        Document doc =
+            Document.newBuilder().setContent(message).setType(Document.Type.PLAIN_TEXT).build();
+        LanguageServiceClient languageService = LanguageServiceClient.create();
+        Sentiment sentiment = languageService.analyzeSentiment(doc).getDocumentSentiment();
+        float score = sentiment.getScore();
+        System.out.println(score);
+        languageService.close();
+        return score;
   }
 }
