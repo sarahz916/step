@@ -8,6 +8,9 @@
 
     <script src="script.js"></script>
   </head>
+  <!-- Would be nice to be able to synchronize navbar accross all html files and not have to state is every time. -->
+  <!-- BUG: navbar does not display correctly on smaller width screens.-->
+  <!-- Nice to have: the navbar not disappear when scrolling down.-->
   <nav class="navbar navbar-expand-lg navbar-light bg-light">
   <a class="navbar-brand" href="#">Sarah Zou</a>
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -77,6 +80,8 @@
     </form>
 
     <form id = "maxcom">
+      <!-- TODO (@zous): could make drop down for newest or oldest comments first. -->
+      <!-- TODO (@zous): can add checkbox for view all-->
       <p>Enter number of comments you wish to view:</p>
       <input type="number" name="max-comments" defaultValue = "3">
       <br/>
@@ -86,9 +91,9 @@
     
     <h2> Submitted Comments </h2>
      <ul id="Comments"></ul> 
-     <!-- TODO: make div and then make seperate boxes of p
+     <!-- TODO (@zous): make div and then make seperate boxes of p
       to look more like comments -->
-    <!-- TODO: only display comments when a user is logged in -->
+    <!-- TODO (@zous): only display comments when a user is logged in -->
       
     <form >
     <button onclick="deleteComments()"> Delete </button>

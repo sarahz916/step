@@ -59,8 +59,8 @@ public class DataServlet extends HttpServlet {
     for (Entity entity : results.asList(FetchOptions.Builder.withLimit(maxComments))) {
       String email = (String) entity.getProperty("email");
       String text = (String) entity.getProperty("text");
-      //String score = (String) entity.getProperty("score");
-      comments.add(email + ": " + text + "\n" + "Score: null");  
+      String score = String.valueOf(entity.getProperty("score"));
+      comments.add(email + ": " + text + "\n" + "Score: " + score);  
     }
 
     Gson gson = new Gson();
@@ -81,14 +81,7 @@ public class DataServlet extends HttpServlet {
     String email = getUserEmail();
     CommentEntity.setProperty("email", email);
     //Get sentiment analysis score. 
-    Document doc =
-        Document.newBuilder().setContent(text).setType(Document.Type.PLAIN_TEXT).build();
-    LanguageServiceClient languageService = LanguageServiceClient.create();
-    Sentiment sentiment = languageService.analyzeSentiment(doc).getDocumentSentiment();
-    float score = sentiment.getScore();
-    System.out.println(score);
-    languageService.close();
-    //float score = getSentimentScore(text);
+    float score = getSentimentScore(text);
     CommentEntity.setProperty("score", score);
     // Store Comment.
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
