@@ -3,8 +3,9 @@
   <head>
     <meta charset="UTF-8">
     <title>Sarah Zou's STEP Portfolio</title>
+    <link rel="stylesheet" href="style.css" type= 'text/css'>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
-    <!--<link rel="stylesheet" href="style.css">-->
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAiGKGFCuFdb_ZrrTy_GHhFSepBuApS6qE"></script> <!-- Might need to hide this key for security reasons. -->
     <script src="script.js"></script>
   </head>
   <nav class="navbar navbar-expand-lg navbar-light bg-light">
@@ -14,7 +15,7 @@
   </button>
   <div class="collapse navbar-collapse" id="navbarNav">
     <ul class="navbar-nav">
-      <li class="nav-item active">
+      <li class="nav-item">
         <a class="nav-link" href="index.html"> Welcome <span class="sr-only">(current)</span></a>
       </li>
       <li class="nav-item">
@@ -26,22 +27,29 @@
       <li class="nav-item">
         <a class="nav-link" href="resume.html"> Resume </a>
       </li>
-      <li class="nav-item">
+      <li class="nav-item active" >
         <a class="nav-link" href="travels.html"> Travel </a>
       </li>
       <li class="nav-item">
         <a class="nav-link" href="contact.html"> Contact </a>
       </li>
+      <li class="nav-item">
+        <a class="nav-link" href="sentimentanalysis.html"> SA </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="/userapi"> Login </a>
+      </li>
       </ul>
   </div>
-  </nav>
-  <body>
+</nav>
+  <body onload="createMap();">
     <div id="content">
       
       <h2> Travel </h2>
-      </a>
-      <p> Empty for now</p>
+      <p>This page shows a Google Map!</p> 
+      <div id="map"></div>
       <p> <a href="index.html">Back to home page </a></p>
     </div>
+   
   </body>
 </html>

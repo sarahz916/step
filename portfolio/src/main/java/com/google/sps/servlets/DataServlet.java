@@ -14,6 +14,9 @@
 
 package com.google.sps.servlets;
 
+import com.google.appengine.api.datastore.FetchOptions;
+import com.google.appengine.api.users.UserService;
+import com.google.appengine.api.users.UserServiceFactory;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
@@ -26,27 +29,34 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
+import java.util.List;
 import com.google.gson.Gson;
 
 /** Servlet that returns comment data */
 @WebServlet("/data")
 public class DataServlet extends HttpServlet {
-    
+     
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-     //retrieves comment data from datastore
+     // Get the user input on how many comments to display.
+     // If user input for max comments is greater than all comments in the datastore, all comments will display.
+     // If comments in the datastore are empty, no comments will be displayed.
+     
+    int maxComments = getNumDisplayComments(request);
+     // Retrieves comment data from datastore. 
+     // Displays most recent comments first.
     Query query = new Query("Comment").addSort("timestamp", SortDirection.DESCENDING);
+     // TODO (@zous): add option to see oldest/newest comments first.
 
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     PreparedQuery results = datastore.prepare(query);
 
-    ArrayList<String> comments = new ArrayList<String>();
-    for (Entity entity : results.asIterable()) {
-      long id = entity.getKey().getId();
+    // Create arraylist of string to store comments.
+    ArrayList<String> comments = new ArrayList<>();
+    for (Entity entity : results.asList(FetchOptions.Builder.withLimit(maxComments))) {
+      String email = (String) entity.getProperty("email");
       String text = (String) entity.getProperty("text");
-      long timestamp = (long) entity.getProperty("timestamp");
-
-      comments.add(text);
+      comments.add(email + ": " + text);  
     }
 
     Gson gson = new Gson();
@@ -63,11 +73,13 @@ public class DataServlet extends HttpServlet {
     Entity CommentEntity = new Entity("Comment");
     CommentEntity.setProperty("text", text);
     CommentEntity.setProperty("timestamp", timestamp);
-    // Store Comment
-    
+    // Store logged in email as part of the CommentEntity.
+    String email = getUserEmail();
+    CommentEntity.setProperty("email", email);
+    UserService userService = UserServiceFactory.getUserService();
+    // Store Comment.
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     datastore.put(CommentEntity);
-
     response.sendRedirect("/index.html");
   }
 
@@ -81,5 +93,33 @@ public class DataServlet extends HttpServlet {
       return defaultValue;
     }
     return value;
+  }
+
+  /** Returns the integer entered by user on how many comments they would like to see displayed */
+  private int getNumDisplayComments(HttpServletRequest request) {
+    // Get the input from the form on MaxComments and convert to integer to the
+    // toGet function.
+    String commentNumString = request.getParameter("max-comments");
+    // Convert the input to an int.
+    int commentNum;
+    try {
+      commentNum = Integer.parseInt(commentNumString);
+      return commentNum;
+    } catch (NumberFormatException e) {
+      throw new IllegalArgumentException(
+            "Expected integer number of comments, but got " +
+            commentNumString);
+    }
+  }
+
+  /** Returns the email address of the user currently logged in */
+  private String getUserEmail(){
+      UserService userService = UserServiceFactory.getUserService();
+      if (userService.isUserLoggedIn()) {
+        String userEmail = userService.getCurrentUser().getEmail();
+        return userEmail;
+      } else {
+        return "anonymous";
+      }  
   }
 }

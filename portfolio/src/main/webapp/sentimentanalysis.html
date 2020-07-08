@@ -5,6 +5,7 @@
     <title>Sarah Zou's STEP Portfolio</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+
     <script src="script.js"></script>
   </head>
   <nav class="navbar navbar-expand-lg navbar-light bg-light">
@@ -20,7 +21,7 @@
       <li class="nav-item">
         <a class="nav-link" href="intro.html"> Introduction </a>
       </li>
-      <li class="nav-item active">
+      <li class="nav-item">
         <a class="nav-link" href="project.html"> Projects </a>
       </li>
       <li class="nav-item">
@@ -32,7 +33,7 @@
       <li class="nav-item">
         <a class="nav-link" href="contact.html"> Contact </a>
       </li>
-      <li class="nav-item">
+      <li class="nav-item active">
         <a class="nav-link" href="sentimentanalysis.html"> SA </a>
       </li>
       <li class="nav-item">
@@ -42,15 +43,15 @@
   </div>
   </nav>
   <body>
-    <div id="content">
-      
-      <h2> Projects </h2>
-      </a>
-      <h3> Research </h3>
+    <div id = "content">
+    <h1>Sentiment Analysis</h1>
+    <p>Type a message and click submit to analyze its sentiment:</p>
 
-      <h3> Club Work </h3>
-      
-      <p> <a href="index.html">Back to home page </a></p>
+    <form method="POST" action="/sentiment">
+      <textarea name="message"></textarea>
+      <br/>
+      <button>Submit</button>
+    </form>
     </div>
   </body>
 </html>

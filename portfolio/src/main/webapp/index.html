@@ -3,9 +3,9 @@
   <head>
     <meta charset="UTF-8">
     <title>Sarah Zou's STEP Portfolio</title>
-    <link rel="stylesheet" href="style.css" type = 'text/css'>
+    <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
-    
+
     <script src="script.js"></script>
   </head>
   <nav class="navbar navbar-expand-lg navbar-light bg-light">
@@ -33,10 +33,16 @@
       <li class="nav-item">
         <a class="nav-link" href="contact.html"> Contact </a>
       </li>
+      <li class="nav-item">
+        <a class="nav-link" href="sentimentanalysis.html"> SA </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="/userapi"> Login </a>
+      </li>
       </ul>
   </div>
 </nav>
-  <body style = "margin-left:auto; margin-right:auto;" onload="getComments()">
+  <body onload="getComments()">
     <div id="content" >
       <h1>Sarah Zou's Portfolio</h1>
       <p> Welcome to my 2020 Google STEP Intern portfolio! </p>
@@ -63,13 +69,30 @@
     <form action="/data" method="POST">
 
       <p>Enter a comment:</p>
-      <textarea name="text-input">Comment</textarea>
+      <textarea name="text-input"></textarea>
       <br/>
       <input type="submit" />
+
+      
+    </form>
+
+    <form id = "maxcom">
+      <p>Enter number of comments you wish to view:</p>
+      <input type="number" name="max-comments" defaultValue = "3">
+      <br/>
+      <input type = "button" onclick = "getComments()" value = "Submit"/>
+      <br/>
     </form>
     
-    <h2> Comments </h2>
-     <ul id="Comments"></ul> <!-- TODO: make div and then make seperate boxes of p to look more like comments see BS documentation-->
+    <h2> Submitted Comments </h2>
+     <ul id="Comments"></ul> 
+     <!-- TODO: make div and then make seperate boxes of p
+      to look more like comments -->
+    <!-- TODO: only display comments when a user is logged in -->
+      
+    <form >
+    <button onclick="deleteComments()"> Delete </button>
+    </form>
   </div>
   </body>
 </html>

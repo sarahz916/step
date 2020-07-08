@@ -31,9 +31,21 @@ function addRandomGreeting() {
  * fetchs /data information async aka Comments
  */
 async function getComments() {
-  const response = await fetch('/data');
+  // Passes in user input on number of comments to display.
+  var maxcom = document.getElementById("maxcom");
+  var text = "/data?max-comments=";
+  // If there is no response, default display is 3 comments.
+  if (maxcom.elements[0].value == ''){
+      text += "3"
+  }
+  else{
+      text += maxcom.elements[0].value;
+  }
+  const response = await fetch(text);
   const data = await response.json();
   const commentEl = document.getElementById('Comments');
+  // Clear current comment section.
+  commentEl.innerText = "";
   data.forEach((line)=> {
       commentEl.appendChild(createListElement(line));
       });
@@ -46,3 +58,23 @@ function createListElement(text) {
   liElement.innerText = text;
   return liElement
   }
+
+/** Calls delete-data servlet to delete commens and then fetches now empty comments from /data */
+async function deleteComments(){
+  fetch('/delete-data', {method: 'POST'});
+  const response = await fetch("/data");
+  const data = await response.json();
+  const commentEl = document.getElementById('Comments');
+  //clear current comment section
+  commentEl.innerText = "";
+  data.forEach((line)=> {
+      commentEl.appendChild(createListElement(line));
+      });
+}
+
+/** Creates a map and adds it to the page. */
+function createMap() {
+  const map = new google.maps.Map(
+      document.getElementById('map'),
+      {center: {lat: 37.422, lng: -122.084}, zoom: 16});
+}
