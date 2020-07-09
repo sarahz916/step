@@ -18,6 +18,8 @@ import java.util.Collection;
 
 public final class FindMeetingQuery {
   public Collection<TimeRange> query(Collection<Event> events, MeetingRequest request) {
-    throw new UnsupportedOperationException("TODO: Implement this method.");
+    //want to return a collection of time ranges that work for the given request. 
+    //cannot conflict with the collection of events given.
+    //make sure to check end point of time range is inclusive. 
   }
 }
