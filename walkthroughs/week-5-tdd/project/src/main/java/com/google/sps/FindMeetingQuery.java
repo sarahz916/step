@@ -77,10 +77,10 @@ public final class FindMeetingQuery {
               TimeRange slotA = TimeRange.fromStartEnd(slot.start(), event.getWhen().start(), false);
               TimeRange slotB = TimeRange.fromStartEnd(event.getWhen().end(), slot.end(), false);
               //check if duration is still good for both
-              if (durationCheck(duration, slotA)){
+              if (checkTimeRangeisLongEnough(duration, slotA)){
                   solutions.add(slotA);
               }
-              if (durationCheck(duration, slotB)){
+              if (checkTimeRangeisLongEnough(duration, slotB)){
                   solutions.add(slotB);
               }
           }
@@ -92,13 +92,13 @@ public final class FindMeetingQuery {
               //shorten slot in the front
               else if (event.getWhen().end() > slot.start()){
                    TimeRange shortenedSlot = TimeRange.fromStartEnd(event.getWhen().end(), slot.end(), false);
-                   if (durationCheck(duration, shortenedSlot)){
+                   if (checkTimeRangeisLongEnough(duration, shortenedSlot)){
                        solutions.add(shortenedSlot);
                    }
               }
               else{
                   TimeRange shortenedSlot = TimeRange.fromStartEnd(slot.start(), event.getWhen().start(), false);
-                  if (durationCheck(duration, shortenedSlot)){
+                  if (checkTimeRangeisLongEnough(duration, shortenedSlot)){
                       solutions.add(shortenedSlot);
                   }
               }
@@ -117,7 +117,7 @@ public final class FindMeetingQuery {
       return !(request.getAttendees().retainAll(event.getAttendees()).isEmpty());
   }
 
-  private boolean durationCheck (long duration, TimeRange timerange){
+  private boolean checkTimeRangeisLongEnough (long duration, TimeRange timerange){
       return (timerange.duration() >= duration);
   }
 }
