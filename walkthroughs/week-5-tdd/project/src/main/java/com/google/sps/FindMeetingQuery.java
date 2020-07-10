@@ -21,7 +21,27 @@ import java.util.Collections;
 import java.util.List;
 
 public final class FindMeetingQuery {
-  public Collection<TimeRange> query(Collection<Event> events, MeetingRequest request) {
+
+
+  public Collection<TimeRange> query (Collection<Event> events, MeetingRequest request){
+        // For optional attendees, just run query twice. First with optional  attendees included, if that is 
+        // not empty then return. If empty, then query just with mandatory attendees. 
+      Collection<String> allAttendees = new ArrayList<>();
+      allAttendees.addAll(request.getAttendees());
+      allAttendees.addAll(request.getOptionalAttendees());
+      MeetingRequest requestAll = new MeetingRequest (allAttendees, request.getDuration()); 
+      Collection<TimeRange> solutionsAll = queryHelper(events, requestAll);
+      // Return query of with optional guests, if there are options
+      // or if there are no mandatory attendees.
+      if (!(solutionsAll.isEmpty()) || request.getAttendees().isEmpty()){
+        return solutionsAll;
+      }
+      else{
+          return queryHelper(events, request);
+      }
+  }
+
+  private Collection<TimeRange> queryHelper(Collection<Event> events, MeetingRequest request) {
     // Want to return a collection of time ranges that work for the given request.
     ArrayList<TimeRange> solutions = new ArrayList<>();
     // No options for too long of a requests.
