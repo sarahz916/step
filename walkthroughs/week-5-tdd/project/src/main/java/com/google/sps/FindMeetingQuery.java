@@ -21,8 +21,11 @@ import java.util.Collections;
 import java.util.List;
 
 public final class FindMeetingQuery {
+    //TODO (@zous): Clean up comments.
 
-
+  // Runtime: O(n^2) where n is number of events passed in. 
+  // Ideally this problem could be dealt in O(n) time with the events sorted before 
+  // finding timeslots. 
   public Collection<TimeRange> query (Collection<Event> events, MeetingRequest request){
         // For optional attendees, just run query twice. First with optional  attendees included, if that is 
         // not empty then return. If empty, then query just with mandatory attendees. 
@@ -41,6 +44,7 @@ public final class FindMeetingQuery {
       }
   }
 
+  //Runtime: O(n^2) where n is the size of the events. 
   private Collection<TimeRange> queryHelper(Collection<Event> events, MeetingRequest request) {
     // Want to return a collection of time ranges that work for the given request.
     ArrayList<TimeRange> solutions = new ArrayList<>();
@@ -69,6 +73,7 @@ public final class FindMeetingQuery {
   }
 
   /**Splits a TimeRange into two time or shotens one TimeRange due to conflict with a given event */
+  // Runtime: O(n) where n is the size of the Old Solutions.
   private ArrayList<TimeRange> takeOutConflicts(ArrayList<TimeRange> oldSolutions, Event event, long duration) {
       ArrayList<TimeRange> solutions = new ArrayList<>();
       for (TimeRange slot: oldSolutions){
@@ -113,6 +118,7 @@ public final class FindMeetingQuery {
   }
 
   /**Returns true if at least one attendee in Meeting Request is an attendee in the Event */
+  // Runtime: addAll and retainAll are O(n) time (I could be wrong on that). 
   private boolean overlappingAttendees(MeetingRequest request, Event event){
       // Since request.getAttendees returns an unmuttable set. Need to copy it.
       Collection<String> requestedAttendees = new ArrayList<>();
@@ -121,6 +127,8 @@ public final class FindMeetingQuery {
       return !requestedAttendees.isEmpty();
   }
 
+/**Checks if timerange can accomodate the duration in the meeting request and returns true or false. */
+// Runtime: constant. 
   private boolean checkTimeRangeisLongEnough (long duration, TimeRange timerange){
       return (timerange.duration() >= duration);
   }
