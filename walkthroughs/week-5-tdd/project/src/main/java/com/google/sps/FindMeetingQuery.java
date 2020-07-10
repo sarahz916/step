@@ -114,11 +114,7 @@ public final class FindMeetingQuery {
 
   /**Returns true if at least one attendee in Meeting Request is an attendee in the Event */
   private boolean overlappingAttendees(MeetingRequest request, Event event){
-      for (String attendee : event.getAttendees()){
-          if (request.getAttendees().contains(attendee))
-            return true;
-        }
-      return false;
+      return !request.getAttendees().retainAll(event.getAttendees()).isEmpty();
   }
 
   private boolean durationCheck (long duration, TimeRange timerange){
