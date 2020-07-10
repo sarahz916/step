@@ -136,7 +136,6 @@ public class DataServlet extends HttpServlet {
         LanguageServiceClient languageService = LanguageServiceClient.create();
         Sentiment sentiment = languageService.analyzeSentiment(doc).getDocumentSentiment();
         float score = sentiment.getScore();
-        System.out.println(score);
         languageService.close();
         return score;
   }
