@@ -114,7 +114,11 @@ public final class FindMeetingQuery {
 
   /**Returns true if at least one attendee in Meeting Request is an attendee in the Event */
   private boolean overlappingAttendees(MeetingRequest request, Event event){
-      return !(request.getAttendees().retainAll(event.getAttendees()).isEmpty());
+      // Since request.getAttendees returns an unmuttable set. Need to copy it.
+      Collection<String> requestedAttendees = new ArrayList<>();
+      requestedAttendees.addAll(request.getAttendees());
+      requestedAttendees.retainAll(event.getAttendees());
+      return !requestedAttendees.isEmpty();
   }
 
   private boolean checkTimeRangeisLongEnough (long duration, TimeRange timerange){
