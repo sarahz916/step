@@ -121,8 +121,7 @@ public final class FindMeetingQuery {
   // Runtime: addAll and retainAll are O(n) time (I could be wrong on that). 
   private boolean overlappingAttendees(MeetingRequest request, Event event){
       // Since request.getAttendees returns an unmuttable set. Need to copy it.
-      Collection<String> requestedAttendees = new ArrayList<>();
-      requestedAttendees.addAll(request.getAttendees());
+      ArrayList<String> requestedAttendees = new ArrayList<>(request.getAttendees());
       requestedAttendees.retainAll(event.getAttendees());
       return !requestedAttendees.isEmpty();
   }
