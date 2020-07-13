@@ -129,10 +129,11 @@ public class DataServlet extends HttpServlet {
       }  
   }
 
-  /** Returns sentiment ananlysis value of comment a float between -1 and 1 */
+  /** Returns sentiment anlysis value of comment as a  float between -1 and 1 (exclusive)*/
   private float getSentimentScore(String message) throws IOException {
         Document doc =
             Document.newBuilder().setContent(message).setType(Document.Type.PLAIN_TEXT).build();
+        // Languages supported can be found at: https://cloud.google.com/natural-language/docs/languages.
         LanguageServiceClient languageService = LanguageServiceClient.create();
         Sentiment sentiment = languageService.analyzeSentiment(doc).getDocumentSentiment();
         float score = sentiment.getScore();

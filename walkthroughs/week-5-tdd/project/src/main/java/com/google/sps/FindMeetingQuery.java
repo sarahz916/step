@@ -27,8 +27,8 @@ public final class FindMeetingQuery {
   // Ideally this problem could be dealt in O(n) time with the events sorted before 
   // finding timeslots. 
   public Collection<TimeRange> query (Collection<Event> events, MeetingRequest request){
-        // For optional attendees, just run query twice. First with optional  attendees included, if that is 
-        // not empty then return. If empty, then query just with mandatory attendees. 
+      // For optional attendees, just run query twice. First with optional  attendees included, if that is 
+      // not empty then return. If empty, then query just with mandatory attendees. 
       Collection<String> allAttendees = new ArrayList<>();
       allAttendees.addAll(request.getAttendees());
       allAttendees.addAll(request.getOptionalAttendees());
@@ -48,7 +48,7 @@ public final class FindMeetingQuery {
   private Collection<TimeRange> queryHelper(Collection<Event> events, MeetingRequest request) {
     // Want to return a collection of time ranges that work for the given request.
     ArrayList<TimeRange> solutions = new ArrayList<>();
-    // No options for too long of a requests.
+    // No options for request longer than a day. Will return no solutions.
     if (request.getDuration() > TimeRange.WHOLE_DAY.duration()){
       return solutions;
     }
@@ -60,8 +60,7 @@ public final class FindMeetingQuery {
     }
     for (Event event: events){
         // Check if event attendees are in the request. If not continue to next event.
-        boolean relevantEvent = overlappingAttendees(request, event);
-        if (!relevantEvent){
+        if (!overlappingAttendees(request, event)){
             continue;
         }
         // Take out conflicting time from current answer of TimeRanges.
@@ -81,7 +80,7 @@ public final class FindMeetingQuery {
               //need to split slot into two
               TimeRange slotA = TimeRange.fromStartEnd(slot.start(), event.getWhen().start(), false);
               TimeRange slotB = TimeRange.fromStartEnd(event.getWhen().end(), slot.end(), false);
-              //check if duration is still good for both
+              //check if duration is still good for both slots.
               if (checkTimeRangeisLongEnough(duration, slotA)){
                   solutions.add(slotA);
               }
@@ -120,7 +119,7 @@ public final class FindMeetingQuery {
   /**Returns true if at least one attendee in Meeting Request is an attendee in the Event */
   // Runtime: addAll and retainAll are O(n) time (I could be wrong on that). 
   private boolean overlappingAttendees(MeetingRequest request, Event event){
-      // Since request.getAttendees returns an unmuttable set. Need to copy it.
+      // Since request.getAttendees returns an inmuttable set. Need to copy it.
       ArrayList<String> requestedAttendees = new ArrayList<>(request.getAttendees());
       requestedAttendees.retainAll(event.getAttendees());
       return !requestedAttendees.isEmpty();
