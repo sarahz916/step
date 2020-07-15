@@ -21,20 +21,22 @@ import java.util.Collections;
 import java.util.List;
 
 public final class FindMeetingQuery {
-    //TODO (@zous): Clean up comments.
 
   // Runtime: O(n^2) where n is number of events passed in. 
   // Ideally this problem could be dealt in O(n) time with the events sorted before 
   // finding timeslots. 
+  
+  /** Given a collection of events and a meeting request, will return a collection of TimeRange that can accommodate Optional + Mandatory
+  Attendees or just Mandatory Attendees if no solutions exist for Optional + Mandatory */
+  // query uses query helper which returns TimeRange solutions for events and Mandatory attendees
   public Collection<TimeRange> query (Collection<Event> events, MeetingRequest request){
-      // For optional attendees, just run query twice. First with optional  attendees included, if that is 
-      // not empty then return. If empty, then query just with mandatory attendees. 
-      Collection<String> allAttendees = new ArrayList<>();
-      allAttendees.addAll(request.getAttendees());
+      // For optional attendees, just run queryhelper twice. First with optional  attendees included, if that is 
+      // not empty then return. If empty, then queryhelper just with mandatory attendees. 
+      Collection<String> allAttendees = new ArrayList<>(request.getAttendees());
       allAttendees.addAll(request.getOptionalAttendees());
       MeetingRequest requestAll = new MeetingRequest (allAttendees, request.getDuration()); 
       Collection<TimeRange> solutionsAll = queryHelper(events, requestAll);
-      // Return query of with optional guests, if there are options
+      // Return query with optional guests, if there are options
       // or if there are no mandatory attendees.
       if (!(solutionsAll.isEmpty()) || request.getAttendees().isEmpty()){
         return solutionsAll;
@@ -45,8 +47,11 @@ public final class FindMeetingQuery {
   }
 
   //Runtime: O(n^2) where n is the size of the events. 
+  /** Given a collection of events and a meeting request, returns a Collection of 
+  TimeRanges that can accommodate the request.*/
+  // Given a possible solution of WHOLE_DAY it takes out portions of time where events conflict.
   private Collection<TimeRange> queryHelper(Collection<Event> events, MeetingRequest request) {
-    // Want to return a collection of time ranges that work for the given request.
+    // Want to return a collection of time ranges that work for the given request's Attendees.
     ArrayList<TimeRange> solutions = new ArrayList<>();
     // No options for request longer than a day. Will return no solutions.
     if (request.getDuration() > TimeRange.WHOLE_DAY.duration()){
@@ -67,20 +72,20 @@ public final class FindMeetingQuery {
         solutions = takeOutConflicts(solutions, event, request.getDuration());
     }
     return solutions;
-    //cannot conflict with the collection of events given.
-    //make sure to check end point of time range is inclusive. 
+
   }
 
-  /**Splits a TimeRange into two time or shotens one TimeRange due to conflict with a given event */
+  /**Splits a TimeRange into two TimeRanges if conflicting event is contained in TimeRange
+   or shotens one TimeRange due to conflict with a given event */
   // Runtime: O(n) where n is the size of the Old Solutions.
   private ArrayList<TimeRange> takeOutConflicts(ArrayList<TimeRange> oldSolutions, Event event, long duration) {
       ArrayList<TimeRange> solutions = new ArrayList<>();
       for (TimeRange slot: oldSolutions){
           if (slot.contains(event.getWhen())){
-              //need to split slot into two
+              // Need to split along contained event.
               TimeRange slotA = TimeRange.fromStartEnd(slot.start(), event.getWhen().start(), false);
               TimeRange slotB = TimeRange.fromStartEnd(event.getWhen().end(), slot.end(), false);
-              //check if duration is still good for both slots.
+              //check if duration is still good for the resulting slots.
               if (checkTimeRangeisLongEnough(duration, slotA)){
                   solutions.add(slotA);
               }
@@ -88,8 +93,9 @@ public final class FindMeetingQuery {
                   solutions.add(slotB);
               }
           }
-          else if (slot.overlaps(event.getWhen())){
-              // if event contains slot continue in the loop
+          else if (slot.overlaps(event.getWhen())){ // Need to take out slot and event overlap.
+              // First make sure that conflicting event does not contian slot
+              // if it does, no longer want to add slot back into solutions.
               if (event.getWhen().contains(slot)){
                   continue;
               }
@@ -108,7 +114,7 @@ public final class FindMeetingQuery {
               }
               
           }
-          else{
+          else{ //If there is no conflict between event and slot, add unmodified slot back into solutions.
               solutions.add(slot);
           }
       }
