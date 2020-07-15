@@ -7,9 +7,13 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
 
     <script src="script.js"></script>
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
   </head>
-  <nav class="navbar navbar-expand-lg navbar-light bg-light">
-  <a class="navbar-brand" href="#">Sarah Zou</a>
+  <!-- Would be nice to be able to synchronize navbar accross all html files and not have to state it every time. -->
+  <nav class="navbar sticky-top navbar-expand-lg navbar-light bg-light">
+  <a class="navbar-brand" href="index.html">Sarah Zou</a>
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>
   </button>
@@ -77,6 +81,8 @@
     </form>
 
     <form id = "maxcom">
+      <!-- TODO (@zous): could make drop down for newest or oldest comments first. -->
+      <!-- TODO (@zous): can add checkbox for view all-->
       <p>Enter number of comments you wish to view:</p>
       <input type="number" name="max-comments" defaultValue = "3">
       <br/>
@@ -86,9 +92,9 @@
     
     <h2> Submitted Comments </h2>
      <ul id="Comments"></ul> 
-     <!-- TODO: make div and then make seperate boxes of p
+     <!-- TODO (@zous): make div and then make seperate boxes of p
       to look more like comments -->
-    <!-- TODO: only display comments when a user is logged in -->
+    <!-- TODO (@zous): only display comments when a user is logged in -->
       
     <form >
     <button onclick="deleteComments()"> Delete </button>
