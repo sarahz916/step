@@ -26,12 +26,14 @@ public final class FindMeetingQuery {
   // Ideally this problem could be dealt in O(n) time with the events sorted before 
   // finding timeslots. 
   
-  /** Given a collection of events and a meeting request, will return a collection of TimeRange that can accommodate Optional + Mandatory
-  Attendees or just Mandatory Attendees if no solutions exist for Optional + Mandatory */
+  /** Given a collection of events and a meeting request, will return a collection of TimeRange 
+   that can accommodate Optional + Mandatory Attendees or just Mandatory Attendees if no solutions 
+   exist for Optional + Mandatory */
   // query uses query helper which returns TimeRange solutions for events and Mandatory attendees
   public Collection<TimeRange> query (Collection<Event> events, MeetingRequest request){
-      // For optional attendees, just run queryhelper twice. First with optional  attendees included, if that is 
-      // not empty then return. If empty, then queryhelper just with mandatory attendees. 
+      // For optional attendees, just run queryhelper twice. First with optional  attendees 
+      // included, if that is not empty then return. 
+      // If empty, then queryhelper just with mandatory attendees. 
       Collection<String> allAttendees = new ArrayList<>(request.getAttendees());
       allAttendees.addAll(request.getOptionalAttendees());
       MeetingRequest requestAll = new MeetingRequest (allAttendees, request.getDuration()); 
@@ -68,8 +70,8 @@ public final class FindMeetingQuery {
         if (!overlappingAttendees(request, event)){
             continue;
         }
-        // Take out conflicting time from current answer of TimeRanges.
-        solutions = takeOutConflicts(solutions, event, request.getDuration());
+        // Modify solutions to accomodate event.
+        solutions = modifySolutions(solutions, event, request.getDuration());
     }
     return solutions;
 
@@ -78,43 +80,30 @@ public final class FindMeetingQuery {
   /**Splits a TimeRange into two TimeRanges if conflicting event is contained in TimeRange
    or shotens one TimeRange due to conflict with a given event */
   // Runtime: O(n) where n is the size of the Old Solutions.
-  private ArrayList<TimeRange> takeOutConflicts(ArrayList<TimeRange> oldSolutions, Event event, long duration) {
+  private ArrayList<TimeRange> modifySolutions(ArrayList<TimeRange> oldSolutions, 
+                                                                Event event, long duration) {
       ArrayList<TimeRange> solutions = new ArrayList<>();
       for (TimeRange slot: oldSolutions){
-          if (slot.contains(event.getWhen())){
-              // Need to split along contained event.
-              TimeRange slotA = TimeRange.fromStartEnd(slot.start(), event.getWhen().start(), false);
-              TimeRange slotB = TimeRange.fromStartEnd(event.getWhen().end(), slot.end(), false);
-              //check if duration is still good for the resulting slots.
-              if (checkTimeRangeisLongEnough(duration, slotA)){
-                  solutions.add(slotA);
-              }
-              if (checkTimeRangeisLongEnough(duration, slotB)){
-                  solutions.add(slotB);
-              }
+            // First make sure that conflicting event does not contian slot
+            // if it does, no longer want to add slot back into solutions.
+          if (event.getWhen().contains(slot)){
+              continue;
           }
-          else if (slot.overlaps(event.getWhen())){ // Need to take out slot and event overlap.
-              // First make sure that conflicting event does not contian slot
-              // if it does, no longer want to add slot back into solutions.
-              if (event.getWhen().contains(slot)){
-                  continue;
-              }
-              //shorten slot in the front
-              else if (event.getWhen().end() > slot.start()){
-                   TimeRange shortenedSlot = TimeRange.fromStartEnd(event.getWhen().end(), slot.end(), false);
-                   if (checkTimeRangeisLongEnough(duration, shortenedSlot)){
-                       solutions.add(shortenedSlot);
-                   }
-              }
-              else{
-                  TimeRange shortenedSlot = TimeRange.fromStartEnd(slot.start(), event.getWhen().start(), false);
-                  if (checkTimeRangeisLongEnough(duration, shortenedSlot)){
-                      solutions.add(shortenedSlot);
-                  }
-              }
-              
+          
+          else if (slot.overlaps(event.getWhen())){ 
+              // Need to take out slot and event overlap.
+            ArrayList<TimeRange> nonConflictingTimes = new ArrayList<>();
+            nonConflictingTimes.addAll(takeOutConflict(slot, event));
+            System.out.println(nonConflictingTimes);
+            // Check if nonconflicting times are long enough for meeting request duration
+            for (TimeRange nonconflictingTime: nonConflictingTimes){
+                if (checkTimeRangeisLongEnough(duration, nonconflictingTime)){
+                    solutions.add(nonconflictingTime);
+                }
+            }
           }
-          else{ //If there is no conflict between event and slot, add unmodified slot back into solutions.
+          else{ //If there is no conflict between event and slot, add unmodified slot back into 
+               //solutions.
               solutions.add(slot);
           }
       }
@@ -131,9 +120,46 @@ public final class FindMeetingQuery {
       return !requestedAttendees.isEmpty();
   }
 
-/**Checks if timerange can accomodate the duration in the meeting request and returns true or false. */
+/**Checks if timerange can accomodate the duration in the meeting request and 
+  returns true or false. */
 // Runtime: constant. 
   private boolean checkTimeRangeisLongEnough (long duration, TimeRange timerange){
       return (timerange.duration() >= duration);
   }
+
+/**Modifies a TimeRange to take out conflicting event. */
+  private Collection<TimeRange> takeOutConflict(TimeRange slot, Event event){
+      Collection<TimeRange> nonConflictingTimes = new ArrayList<>();
+      if (slot.contains(event.getWhen())){
+          nonConflictingTimes.addAll(splitTimeRange(slot, event));
+      }
+      else{
+          nonConflictingTimes.add(shortenTimeRange(slot, event));
+      }
+      return nonConflictingTimes;
+  }
+
+  /**Given a conflicting event that is contained in the TimeRange, TimeRange will be split along the event. */
+  private Collection<TimeRange> splitTimeRange(TimeRange slot, Event event){
+    TimeRange slotA = TimeRange.fromStartEnd(slot.start(), event.getWhen().start(), false);
+    TimeRange slotB = TimeRange.fromStartEnd(event.getWhen().end(), slot.end(), false);
+    //check if duration is still good for the resulting slots.
+    return new ArrayList<TimeRange>(Arrays.asList(slotA, slotB));
+  }
+
+  /**Given a conflicting event overlaps (but not contains) a TimeRange, will shorten TimeRange to not 
+  conflict with event. */
+  private TimeRange shortenTimeRange(TimeRange slot, Event event){
+    if (event.getWhen().end() > slot.start()){
+    TimeRange shortenedSlot = TimeRange.fromStartEnd(event.getWhen().end(), slot.end(), false);
+    return shortenedSlot;
+    }
+    else{
+    TimeRange shortenedSlot = TimeRange.fromStartEnd(slot.start(), event.getWhen().start(), false);
+    return shortenedSlot;
+    }
+    
+  }
 }
+
+
