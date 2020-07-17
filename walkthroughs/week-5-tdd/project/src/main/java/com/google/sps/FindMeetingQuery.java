@@ -78,7 +78,7 @@ public final class FindMeetingQuery {
   }
 
   /**Splits a TimeRange into two TimeRanges if conflicting event is contained in TimeRange
-   or shotens one TimeRange due to conflict with a given event */
+   or shortens one TimeRange due to conflict with a given event */
   // Runtime: O(n) where n is the size of the Old Solutions.
   private ArrayList<TimeRange> modifySolutions(ArrayList<TimeRange> oldSolutions, 
                                                                 Event event, long duration) {
@@ -91,14 +91,13 @@ public final class FindMeetingQuery {
           }
           
           else if (slot.overlaps(event.getWhen())){ 
-              // Need to take out slot and event overlap.
-            ArrayList<TimeRange> nonConflictingTimes = new ArrayList<>();
-            nonConflictingTimes.addAll(takeOutConflict(slot, event));
+            // Need to take out slot and event overlap.
+            ArrayList<TimeRange> nonConflictingTimes = new ArrayList<>(takeOutConflict(slot, event));
             System.out.println(nonConflictingTimes);
             // Check if nonconflicting times are long enough for meeting request duration
-            for (TimeRange nonconflictingTime: nonConflictingTimes){
-                if (checkTimeRangeisLongEnough(duration, nonconflictingTime)){
-                    solutions.add(nonconflictingTime);
+            for (TimeRange nonConflictingTime: nonConflictingTimes){
+                if (isTimeRangeLongEnough(duration, nonConflictingTime)){
+                    solutions.add(nonConflictingTime);
                 }
             }
           }
@@ -123,7 +122,7 @@ public final class FindMeetingQuery {
 /**Checks if timerange can accomodate the duration in the meeting request and 
   returns true or false. */
 // Runtime: constant. 
-  private boolean checkTimeRangeisLongEnough (long duration, TimeRange timerange){
+  private boolean isTimeRangeLongEnough (long duration, TimeRange timerange){
       return (timerange.duration() >= duration);
   }
 
@@ -151,12 +150,12 @@ public final class FindMeetingQuery {
   conflict with event. */
   private TimeRange shortenTimeRange(TimeRange slot, Event event){
     if (event.getWhen().end() > slot.start()){
-    TimeRange shortenedSlot = TimeRange.fromStartEnd(event.getWhen().end(), slot.end(), false);
-    return shortenedSlot;
+        TimeRange shortenedSlot = TimeRange.fromStartEnd(event.getWhen().end(), slot.end(), false);
+        return shortenedSlot;
     }
     else{
-    TimeRange shortenedSlot = TimeRange.fromStartEnd(slot.start(), event.getWhen().start(), false);
-    return shortenedSlot;
+        TimeRange shortenedSlot = TimeRange.fromStartEnd(slot.start(), event.getWhen().start(), false);
+        return shortenedSlot;
     }
     
   }
