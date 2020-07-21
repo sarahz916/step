@@ -43,6 +43,9 @@ public class SentimentAnalysisServlet extends HttpServlet {
     response.getWriter().println("<h1>Sentiment Analysis</h1>");
     response.getWriter().println("<p>You entered: " + message + "</p>");
     response.getWriter().println("<p>Sentiment analysis score: " + score + "</p>");
+    response.getWriter().println("<p> Positive sentiment is scored in the range (0, 1) with scores closer to 1 as more positive."
+            + "<br> Negative sentiment is scored in the range (-1, 0) with scores closer to -1 as more negative."
+            + "<br> Scores closer to 0 are more neutral </p>");
     response.getWriter().println("<p><a href=\"/\">Back</a></p>");
   }
 }
